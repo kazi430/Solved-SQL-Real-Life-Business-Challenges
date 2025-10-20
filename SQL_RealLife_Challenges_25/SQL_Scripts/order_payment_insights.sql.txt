@@ -1,0 +1,29 @@
+/* Calculate the total sales by each payment method. */
+SELECT PaymentMethod, SUM(TotalAmount) AS TotalAmount
+FROM Orders
+GROUP BY PaymentMethod
+ORDER BY TotalAmount DESC;
+
+/* Find the orders with the highest and lowest total amounts. */
+SELECT *
+FROM Orders
+WHERE TotalAmount = (SELECT MAX(TotalAmount) FROM Orders)
+   OR TotalAmount = (SELECT MIN(TotalAmount) FROM Orders);
+
+/* Count how many orders each customer has placed. */
+SELECT CustomerID, COUNT(OrderID) AS TotalOrders
+FROM Orders
+GROUP BY CustomerID
+ORDER BY TotalOrders DESC;
+
+/* Find the total yearly sales. */
+SELECT YEAR(OrderDate) AS Years, SUM(TotalAmount) AS TotalAmount
+FROM Orders
+GROUP BY YEAR(OrderDate)
+ORDER BY TotalAmount DESC;
+
+/* Calculate total sales for Q2 of 2024 (April–June). */
+SELECT SUM(TotalAmount) AS TotalSales_Q2_2024
+FROM Orders
+WHERE YEAR(OrderDate) = 2024
+  AND DATEPART(QUARTER, OrderDate) = 2;

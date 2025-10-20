@@ -1,0 +1,27 @@
+/* Find the average price of products in each category. */
+SELECT Category, ROUND(AVG(Price), 2) AS AvgPrice
+FROM Products
+GROUP BY Category
+ORDER BY AvgPrice DESC;
+
+/* List products priced higher than the average price of all products. */
+SELECT * FROM Products
+WHERE Price > (SELECT AVG(Price) FROM Products);
+
+/* Calculate total in-stock quantity for each supplier. */
+SELECT Supplier, SUM(InStock) AS TotalStock
+FROM Products
+GROUP BY Supplier
+ORDER BY TotalStock DESC;
+
+/* Find products with the lowest stock levels. */
+SELECT * FROM Products
+WHERE InStock = (SELECT MIN(InStock) FROM Products);
+
+/* Compare average and maximum prices for the “Accessories” category. */
+SELECT Category,
+       AVG(Price) AS AvgPrice,
+       MAX(Price) AS MaxPrice
+FROM Products
+WHERE Category = 'Accessories'
+GROUP BY Category;

@@ -1,0 +1,40 @@
+/* Find the total number of customers in each city. */
+SELECT City, COUNT(CustomerID) AS TotalCustomers
+FROM Customers
+GROUP BY City
+ORDER BY TotalCustomers DESC;
+
+/* Identify the years with the highest number of new customer registrations. */
+SELECT YEAR(JoinDate) AS Years, COUNT(CustomerID) AS TotalCustomers
+FROM Customers
+GROUP BY YEAR(JoinDate)
+ORDER BY TotalCustomers DESC;
+
+/* Dhaka customers joined after 2022 */
+SELECT COUNT(*) AS CustomersFromDhaka
+FROM Customers
+WHERE City = 'Dhaka' AND YEAR(JoinDate) > 2022;
+
+/* Retrieve customers whose email address does not contain “@mail.com” */
+SELECT * FROM Customers
+WHERE Email NOT LIKE '%@mail.com%';
+
+/* Find the earliest joined customer (minimum JoinDate) for each city. */
+SELECT CustomerID, FullName, City, JoinDate
+FROM Customers c
+WHERE JoinDate = (
+    SELECT MIN(JoinDate)
+    FROM Customers
+    WHERE City = c.City
+)
+ORDER BY City;
+
+/* Using window function alternative */
+SELECT City, CustomerID, FullName, JoinDate
+FROM (
+    SELECT City, CustomerID, FullName, JoinDate,
+           RANK() OVER (PARTITION BY City ORDER BY JoinDate ASC) AS RankByCity
+    FROM Customers
+) t
+WHERE RankByCity = 1
+ORDER BY City;

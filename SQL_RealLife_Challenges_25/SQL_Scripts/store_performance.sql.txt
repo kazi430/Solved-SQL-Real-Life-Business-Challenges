@@ -1,0 +1,37 @@
+/* Count the number of orders handled by each store. */
+SELECT StoreID, COUNT(*) AS TotalOrders
+FROM Orders
+GROUP BY StoreID
+ORDER BY TotalOrders DESC;
+
+/* Calculate both the total and average sales for each store. */
+SELECT StoreID,
+       SUM(TotalAmount) AS TotalAmount,
+       AVG(TotalAmount) AS AvgAmount
+FROM Orders
+GROUP BY StoreID
+ORDER BY TotalAmount DESC;
+
+/* Find total sales for stores opened before 2023. */
+SELECT s.StoreID, SUM(o.TotalAmount) AS TotalAmount
+FROM Orders o
+JOIN Stores s ON o.StoreID = s.StoreID
+WHERE s.OpenedDate < '2023-01-01'
+GROUP BY s.StoreID;
+
+/* Identify the manager who achieved the highest total sales (with window function). */
+SELECT ManagerName, TotalSales, RANK() OVER (ORDER BY TotalSales DESC) AS SalesRank
+FROM (
+    SELECT s.ManagerName, SUM(o.TotalAmount) AS TotalSales
+    FROM Orders o
+    JOIN Stores s ON o.StoreID = s.StoreID
+    GROUP BY s.ManagerName
+) AS RankedManagers
+WHERE SalesRank = 1;
+
+/* Find the customer who placed the highest-value order at Store 3. */
+SELECT TOP 1 CustomerID, SUM(TotalAmount) AS TotalAmount
+FROM Orders
+WHERE StoreID = 3
+GROUP BY CustomerID
+ORDER BY TotalAmount DESC;

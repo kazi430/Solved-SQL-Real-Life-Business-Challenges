@@ -1,0 +1,31 @@
+/* Calculate the total discount amount for each order. */
+SELECT OrderID,
+       SUM(Quantity * UnitPrice * (DiscountPercent / 100)) AS TotalDiscountAmount
+FROM OrderDetails
+GROUP BY OrderID
+ORDER BY TotalDiscountAmount DESC;
+
+/* List all orders where the discount percentage is greater than 10%. */
+SELECT DISTINCT OrderID
+FROM OrderDetails
+WHERE DiscountPercent > 10;
+
+/* Calculate total quantity sold per product. */
+SELECT ProductID, SUM(Quantity) AS TotalQuantity
+FROM OrderDetails
+GROUP BY ProductID
+ORDER BY TotalQuantity DESC;
+
+/* Find the product with the highest total quantity sold. */
+SELECT TOP 1 ProductID, SUM(Quantity) AS TotalQuantity
+FROM OrderDetails
+GROUP BY ProductID
+ORDER BY TotalQuantity DESC;
+
+/* Compute each order’s effective total after discount. */
+SELECT 
+    OrderID,
+    SUM(Quantity * UnitPrice * (1 - (DiscountPercent / 100))) AS EffectiveTotal
+FROM OrderDetails
+GROUP BY OrderID
+ORDER BY EffectiveTotal DESC;
